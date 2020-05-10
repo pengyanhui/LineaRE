@@ -47,7 +47,6 @@ def train(model, triples, ent_num):
             metrics = {}
             for metric in training_logs[0].keys():
                 metrics[metric] = sum([log[metric] for log in training_logs]) / len(training_logs)
-            metrics["gamma"] = model.gamma.item()
             log_metrics("Training average", step, metrics)
             training_logs = []
 
