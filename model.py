@@ -8,10 +8,10 @@ from config import config
 class Model(nn.Module):
     def __init__(self, ent_num, rel_num):
         super(Model, self).__init__()
-        self.gamma = nn.Parameter(torch.tensor(config.gamma), requires_grad=False)
-        self.ents = nn.Parameter(torch.arange(ent_num).unsqueeze(dim=0), requires_grad=False)
+        self.register_buffer("gamma", torch.tensor(config.gamma))
+        self.register_buffer("ents", torch.arange(ent_num).unsqueeze(dim=0))
         self.ent_embd = nn.Embedding(ent_num, config.ent_dim)
-        self.rel_embd = nn.Embedding(rel_num, config.rel_dim)
+        self.rel_embd = nn.Embedding(rel_num, config.rel_dim, max_norm=1.0)
         self.init_weights()
 
     def init_weights(self):
@@ -34,8 +34,6 @@ class Model(nn.Module):
 class TransE(Model):
     def __init__(self, ent_num, rel_num):
         super(TransE, self).__init__(ent_num, rel_num)
-        self.ent_embd = nn.Embedding(ent_num, config.ent_dim)
-        nn.init.xavier_uniform_(self.ent_embd.weight)
 
     def forward(self, pos_sample, neg_sample=None, mode=None):
         h, r, t = self.get_pos_embd(pos_sample)
@@ -93,6 +91,8 @@ class TransH(Model):
 class TransR(Model):
     def __init__(self, ent_num, rel_num):
         super(TransR, self).__init__(ent_num, rel_num)
+        self.ent_embd = nn.Embedding(ent_num, config.ent_dim, max_norm=1.0)
+        self.rel_embd = nn.Embedding(rel_num, config.ent_dim, max_norm=1.0)
         self.mr = nn.Embedding(rel_num, config.ent_dim * config.rel_dim)
         nn.init.xavier_uniform_(self.mr.weight)
 
@@ -123,11 +123,46 @@ class TransR(Model):
         return h, r, t, m
 
 
+class SimpleTransR(Model):
+    def __init__(self, ent_num, rel_num):
+        super(SimpleTransR, self).__init__(ent_num, rel_num)
+        self.ent_embd = nn.Embedding(ent_num, config.ent_dim, max_norm=1.0)
+        self.rel_embd = nn.Embedding(rel_num, config.rel_dim, max_norm=1.0)
+        self.mr = nn.Embedding(rel_num, config.rel_dim)
+        nn.init.xavier_uniform_(self.ent_embd.weight)
+        nn.init.xavier_uniform_(self.rel_embd.weight)
+        nn.init.xavier_uniform_(self.mr.weight)
+
+    def forward(self, pos_sample, neg_sample=None, mode=None):
+        h, r, t, m = self.get_pos_embd(pos_sample)
+        if neg_sample is not None:
+            neg_embd = self.get_neg_embd(neg_sample)
+            if mode == "head-batch":
+                score = m * neg_embd + (r - m * t)
+            elif mode == "tail-batch":
+                score = (m * h + r) - m * neg_embd
+            else:
+                raise ValueError("mode %s not supported" % mode)
+        else:
+            score = m * h + r - m * t
+        score = torch.norm(score, p=config.norm_p, dim=-1) - self.gamma
+        return score
+
+    def get_pos_embd(self, pos_sample):
+        h, r, t = super(SimpleTransR, self).get_pos_embd(pos_sample)
+        m = self.mr(pos_sample[:, 1]).unsqueeze(dim=1)
+        return h, r, t, m
+
+
 class TransD(Model):
     def __init__(self, ent_num, rel_num):
         super(TransD, self).__init__(ent_num, rel_num)
+        # self.ent_embd = nn.Embedding(ent_num, config.ent_dim, max_norm=1.0)
+        # self.rel_embd = nn.Embedding(rel_num, config.rel_dim, max_norm=1.0)
         self.ent_p = nn.Embedding(ent_num, config.ent_dim)
         self.rel_p = nn.Embedding(rel_num, config.rel_dim)
+        # nn.init.xavier_uniform_(self.ent_embd.weight)
+        # nn.init.xavier_uniform_(self.rel_embd.weight)
         nn.init.xavier_uniform_(self.ent_p.weight)
         nn.init.xavier_uniform_(self.rel_p.weight)
 
@@ -184,6 +219,45 @@ class TransD(Model):
         return self.ent_embd(neg_sample), self.ent_p(neg_sample)
 
 
+class TransIJ(Model):
+    def __init__(self, ent_num, rel_num):
+        super(TransIJ, self).__init__(ent_num, rel_num)
+        self.ent_p = nn.Embedding(ent_num, config.ent_dim)
+        nn.init.xavier_uniform_(self.ent_p.weight)
+
+    def forward(self, pos_sample, neg_sample=None, mode=None):
+        h, r, t, hp, tp = self.get_pos_embd(pos_sample)
+        if neg_sample is not None:
+            neg_embd, np = self.get_neg_embd(neg_sample)
+            if mode == "head-batch":
+                h = neg_embd
+                hp = np
+            elif mode == "tail-batch":
+                t = neg_embd
+                tp = np
+            else:
+                raise ValueError("mode %s not supported" % mode)
+
+        tp_h = (tp * h).sum(dim=-1, keepdim=True)
+        hp_tp_h = tp_h * hp
+        hp_tp_h_h = hp_tp_h + h
+        tp_t = (tp * t).sum(dim=-1, keepdim=True)
+        hp_tp_t = tp_t * hp
+        hp_tp_t_t = hp_tp_t + t
+        score = hp_tp_h_h + r - hp_tp_t_t
+        score = torch.norm(score, p=config.norm_p, dim=-1) - self.gamma
+        return score
+
+    def get_pos_embd(self, pos_sample):
+        h, r, t = super(TransIJ, self).get_pos_embd(pos_sample)
+        hp = self.ent_p(pos_sample[:, 0]).unsqueeze(dim=1)
+        tp = self.ent_p(pos_sample[:, 2]).unsqueeze(dim=1)
+        return h, r, t, hp, tp
+
+    def get_neg_embd(self, neg_sample):
+        return self.ent_embd(neg_sample), self.ent_p(neg_sample)
+
+
 class STransE(Model):
     def __init__(self, ent_num, rel_num):
         super(STransE, self).__init__(ent_num, rel_num)
@@ -225,10 +299,11 @@ class STransE(Model):
 class LineaRE(Model):
     def __init__(self, ent_num, rel_num):
         super(LineaRE, self).__init__(ent_num, rel_num)
-        self.wrh = nn.Embedding(rel_num, config.rel_dim)
-        self.wrt = nn.Embedding(rel_num, config.rel_dim)
+        self.wrh = nn.Embedding(rel_num, config.rel_dim, max_norm=config.rel_dim, norm_type=1)
+        self.wrt = nn.Embedding(rel_num, config.rel_dim, max_norm=config.rel_dim, norm_type=1)
         nn.init.zeros_(self.wrh.weight)
         nn.init.zeros_(self.wrt.weight)
+        nn.init.xavier_uniform_(self.rel_embd.weight)
 
     def forward(self, pos_sample, neg_sample=None, mode=None):
         h, r, t, wh, wt = self.get_pos_embd(pos_sample)
@@ -338,7 +413,7 @@ class RotatE(Model):
             score_im = h_re * rel_im + h_im * rel_re
             score_re = score_re - t_re
             score_im = score_im - t_im
-        score = torch.stack([score_re, score_im], dim=0).norm(dim=0)
+        score = torch.stack([score_re, score_im]).norm(dim=0)
         score = score.sum(dim=-1) - self.gamma
         return score
 

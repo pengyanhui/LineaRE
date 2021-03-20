@@ -9,6 +9,7 @@ class Config(object):
         self.ent_dim = json_config["ent_dim"]
         self.rel_dim = json_config["rel_dim"]
         self.norm_p = json_config["norm_p"]
+        self.alpha = json_config["alpha"]
         self.beta = json_config["beta"]
         self.gamma = json_config["gamma"]
         self.learning_rate = json_config["learning_rate"]
@@ -18,17 +19,14 @@ class Config(object):
         self.test_batch_size = json_config["test_batch_size"]
         self.data_path = json_config["data_path"]
         self.save_path = json_config["save_path"]
-        self.cuda = json_config["cuda"]
         self.max_step = json_config["max_step"]
         self.valid_step = json_config["valid_step"]
         self.log_step = json_config["log_step"]
         self.test_log_step = json_config["test_log_step"]
         self.init_checkpoint = json_config["init_checkpoint"]
         self.use_old_optimizer = json_config["use_old_optimizer"]
-        self.adversarial = json_config["adversarial"]
-        self.adversarial_temperature = json_config["adversarial_temperature"]
         self.uni_weight = json_config["uni_weight"]
-        self.cpu_num = json_config["cpu_num"]
+        self.sampling_rate = json_config["sampling_rate"]
 
 
 config = Config("config/config.json")

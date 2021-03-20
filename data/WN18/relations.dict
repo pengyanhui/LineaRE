@@ -1,23 +1,18 @@
-NO. Relation                              对称/总数            逆/总数                    hpt/tph
-0	_member_of_domain_topic         2/3118       0.00064                     305/2974/3118	    1.05	10.2
-1	_has_part                       0/4816	     0.0        4489	4805     1978/3990/4816   	1.21	2.43
-2	_synset_domain_usage_of         0/632	     0.0                         597/24/632   	    26.3	1.06
-3	_synset_domain_region_of        0/903	     0.0                         856/111/903	    8.14	1.05
-4	_member_of_domain_region        0/923	     0.0                         114/873/923	    1.06	8.10
-5	_member_meronym                 0/7402	     0.0                         3095/7340/7402	    1.01	2.39
-6	_part_of                        0/4805	     0.0        4489	4816     3991/1987/4805	    2.42	1.20
-7	_verb_group                     1060/1138	 0.93146                     978/980/1138	    1.16    1.16
-8	_derivationally_related_form    27701/29715	 0.93222                     16102/16109/29715	1.84	1.85
-9	_instance_hypernym              0/2921	     0.0        2718	2921     2466/404/2921	    7.23	1.18
-10	_instance_hyponym               0/2935	     0.0        2718	2935     410/2480/2935	    1.18	7.16
-11	_similar_to                     74/80	     0.92500                     77/76/80	        1.05	1.04
-12	_hyponym                        0/34832	     0.0        32537	34832    9507/34077/34832 	1.02	3.66
-13	_also_see                       828/1299	 0.63741                     707/787/1299   	1.65	1.84
-14	_member_of_domain_usage         0/629	     0.0                         25/594/629     	1.06	25.2
-15	_synset_domain_topic_of         2/3116	     0.00064                     2972/309/3116  	10.1	1.05
-16	_member_holonym                 0/7382	     0.0                         7319/3107/7382 	2.38	1.01
-17	_hypernym                       0/34796	     0.0        32537	34796    34033/9500/34796	3.66	1.02
-
-对称关系：_similar_to
-逆关系：_instance_hypernym & _instance_hyponym   _hyponym & _hypernym
-组合关系用 FB15k-237    for1:9   for2:108    winner:10
+0	_member_of_domain_topic
+1	_has_part
+2	_synset_domain_usage_of
+3	_synset_domain_region_of
+4	_member_of_domain_region
+5	_member_meronym
+6	_part_of
+7	_verb_group
+8	_derivationally_related_form
+9	_instance_hypernym
+10	_instance_hyponym
+11	_similar_to
+12	_hyponym
+13	_also_see
+14	_member_of_domain_usage
+15	_synset_domain_topic_of
+16	_member_holonym
+17	_hypernym
