@@ -6,11 +6,11 @@ You can easily add your own model to the code framework.
 ## Update!
 We reorganized and optimized the code.
 The new version of the code has clearer logical structure and faster running speed,
-and supports multi GPU parallel training to further accelerate the training speed.
+and supports multi GPUs parallel training to further accelerate the training speed.
 
 ## Code
 Running LineaRE is very easy, just:
-1. put your arguments in the json files <code> ./configs/*.json </code>, e.g. <code> config_FB15k.json </code>
+1. put your arguments in the json files <code> ./config/*.json </code>, e.g. <code> config_FB15k.json </code>
 2. execute command, <code> python3 main.py </code>
 #### Code files
 Totally six python files:
@@ -34,7 +34,7 @@ Four datasets: FB15k, WN18, FB15k-237, WN18RR.
  - *valid.txt*: create a blank file if no validation data is available;
  - *test.txt*: the KGE model is evaluated on this data set.
 
-## Parameters(./configs/config_FB15k.json)
+## Parameters(./config/config_FB15k.json)
  - *dim*: the dimmention (size) of embeddings,
  - *norm_p*: L1-Norm or L2-Norm,
  - *alpha*: the temperature of Self-Adversarial Negative Sampling [[1](#refer-1)], Eq(3) in our paper,
