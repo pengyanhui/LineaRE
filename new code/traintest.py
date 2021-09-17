@@ -80,25 +80,20 @@ class TrainTest:
 		metrics = LineaRE.test_step(self.__cal_model, test_data_list, True)
 		self._log_metrics('Test', step, metrics)
 
-	def _get_optimizer(self):
+		def _get_optimizer(self):  # add Optimizer you wanted here
 		current_lr = config.learning_rate
 		if config.optimizer == 'Adam':
-			optimizer = torch.optim.Adam(
-				filter(lambda p: p.requires_grad, self.__model.parameters()),
-				lr=current_lr
-			)
+			Optimizer = torch.optim.Adam
 		elif config.optimizer == 'Adagrad':
-			optimizer = torch.optim.Adagrad(
-				filter(lambda p: p.requires_grad, self.__model.parameters()),
-				lr=current_lr
-			)
+			Optimizer = torch.optim.Adagrad
 		elif config.optimizer == 'SGD':
-			optimizer = torch.optim.SGD(
-				filter(lambda p: p.requires_grad, self.__model.parameters()),
-				lr=current_lr
-			)
+			Optimizer = torch.optim.SGD
 		else:
 			raise ValueError(f'optimizer {config.optimizer} not supported')
+		optimizer = Optimizer(
+			filter(lambda p: p.requires_grad, self.__model.parameters()),
+			lr=current_lr
+		)
 
 		if config.init_checkpoint:
 			logging.info('Loading checkpoint...')
