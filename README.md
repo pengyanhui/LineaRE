@@ -14,7 +14,7 @@ Running LineaRE is very easy, just:
 2. execute command, <code> python3 main.py </code>
 #### Code files
 Totally six python files:
-* <code> configure.py</code>: including all hyper parameter, reading arguments from <code> ./configs/*.json </code>;
+* <code> configure.py</code>: including all hyper parameter, reading arguments from <code> ./config/*.json </code>;
 * <code> data.py</code>: dataloader, a KG class containing all data in a dataset;
 * <code> lineare.py</code>: the implementation of the LineaRE model;
 * <code> main.py</code>: the entry of the whole program, creating a KG object, a TrainTest object, and start training and test;
