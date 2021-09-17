@@ -1,6 +1,7 @@
 # LineaRE
 Source code for [ICDM2020](http://icdm2020.bigke.org/) research paper "LineaRE: Simple but Powerful
-Knowledge Graph Embedding for Link Prediction", a.k.a., LineaRE.
+Knowledge Graph Embedding for Link Prediction", a.k.a., LineaRE.<br>
+You can easily add your own model to the code framework.
 
 ## Update!
 We reorganized and optimized the code.
@@ -12,12 +13,13 @@ Running LineaRE is very easy, just:
 1. put your arguments in the json files <code> ./configs/*.json </code>, e.g. <code> config_FB15k.json </code>
 2. execute command, <code> python3 main.py </code>
 #### Code files
-Totally five python files:
-* <code> configure.py </code>: including all hyper parameter, reading arguments from <code> ./configs/*.json </code>;
-* <code> data.py </code>: dataloader, a KG class containing all data in a dataset;
-* <code> lineare.py </code>: the implementation of the LineaRE model;
+Totally six python files:
+* <code> configure.py</code>: including all hyper parameter, reading arguments from <code> ./configs/*.json </code>;
+* <code> data.py</code>: dataloader, a KG class containing all data in a dataset;
+* <code> lineare.py</code>: the implementation of the LineaRE model;
 * <code> main.py</code>: the entry of the whole program, creating a KG object, a TrainTest object, and start training and test;
-* <code> utils.py </code>: some model independent tools.
+* <code> traintest.py</code>: receiving a KG object, a model, and the process of training and testing is described;
+* <code> utils.py</code>: some model independent tools.
 #### Dependencies
 * Python 3
 * PyTorch 1.*
