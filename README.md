@@ -75,5 +75,5 @@ If you use this model or code, please cite it as follows:
 
 ## References
 <div id="refer-1"></div>
- 
+
 - [1] [RotatE](https://github.com/DeepGraphLearning/KnowledgeGraphEmbedding)
