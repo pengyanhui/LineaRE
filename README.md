@@ -4,7 +4,7 @@ Knowledge Graph Embedding for Link Prediction", a.k.a., LineaRE.<br>
 You can easily add your own model to the code framework.
 
 ## Update!
-We reorganized and optimized the code.
+We reorganized and optimized the code (/new code).
 The new version of the code has clearer logical structure and faster running speed,
 and supports multi GPUs parallel training to further accelerate the training speed.
 
