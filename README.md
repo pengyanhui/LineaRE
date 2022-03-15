@@ -67,7 +67,7 @@ If you use this model or code, please cite it as follows:
 @inproceedings{peng2020lineare,
   author    = {Yanhui Peng and Jing Zhang},
   editor    = {Claudia Plant and Haixun Wang and Alfredo Cuzzocrea and Carlo Zaniolo and Xindong Wu},
-  title     = {ineaRE: Simple but Powerful Knowledge Graph Embedding for Link Prediction},
+  title     = {LineaRE: Simple but Powerful Knowledge Graph Embedding for Link Prediction},
   booktitle = {IEEE International Conference on Data Mining, {ICDM}},
   pages     = {422--431},
   year      = {2020},
